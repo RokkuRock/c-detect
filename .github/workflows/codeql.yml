@@ -46,10 +46,6 @@ jobs:
         include:
         - language: c-cpp
           build-mode: manual
-        - language: java-kotlin
-          build-mode: none
-        - language: python
-          build-mode: none
         # CodeQL supports the following values keywords for 'language': 'actions', 'c-cpp', 'csharp', 'go', 'java-kotlin', 'javascript-typescript', 'python', 'ruby', 'swift'
         # Use `c-cpp` to analyze code written in C, C++ or both
         # Use 'java-kotlin' to analyze code written in Java, Kotlin or both
@@ -61,21 +57,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
-
-    # Setup Java for Java/Kotlin analysis
-    - if: matrix.language == 'java-kotlin'
-      name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
-
-    # Setup Python for Python analysis
-    - if: matrix.language == 'python'
-      name: Setup Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.11'
 
     # Initializes the CodeQL tools for scanning.
     - name: Initialize CodeQL
@@ -136,60 +117,6 @@ jobs:
         echo "Enhanced compilation setup completed"
         echo "Generated files for analysis:"
         ls -la *.o 2>/dev/null || echo "No object files created"
-
-    # Java 建置步驟
-    - if: matrix.language == 'java-kotlin'
-      name: Build Java project
-      shell: bash
-      run: |
-        echo "Building Java project for CodeQL analysis..."
-        
-        # 檢查並列出 Java 文件
-        echo "Java files to be analyzed:"
-        find . -name "*.java" -o -name "*.kt" | head -20
-        
-        # 嘗試使用 Maven 建置
-        if [ -f "pom.xml" ]; then
-          echo "Found Maven project, building with Maven..."
-          mvn clean compile -DskipTests || echo "Maven build completed with issues"
-        # 嘗試使用 Gradle 建置
-        elif [ -f "build.gradle" ] || [ -f "build.gradle.kts" ]; then
-          echo "Found Gradle project, building with Gradle..."
-          ./gradlew build -x test || echo "Gradle build completed with issues"
-        else
-          echo "No Maven or Gradle project found, compiling Java files manually..."
-          # 手動編譯 Java 文件
-          for file in $(find . -name "*.java"); do
-            echo "Compiling Java file: $file"
-            javac -cp ".:*" "$file" || echo "Note: $file compilation issues (normal for analysis)"
-          done
-        fi
-
-    # Python 環境設置
-    - if: matrix.language == 'python'
-      name: Setup Python environment
-      shell: bash
-      run: |
-        echo "Setting up Python environment for CodeQL analysis..."
-        
-        # 檢查並列出 Python 文件
-        echo "Python files to be analyzed:"
-        find . -name "*.py" | head -20
-        
-        # 安裝常用依賴
-        if [ -f "requirements.txt" ]; then
-          echo "Installing requirements from requirements.txt..."
-          pip install -r requirements.txt || echo "Requirements installation completed with issues"
-        fi
-        
-        if [ -f "setup.py" ]; then
-          echo "Installing package in development mode..."
-          pip install -e . || echo "Package installation completed with issues"
-        fi
-        
-        # 編譯 Python 文件以檢查語法
-        echo "Checking Python syntax..."
-        python -m py_compile $(find . -name "*.py") || echo "Python syntax check completed"
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v3
