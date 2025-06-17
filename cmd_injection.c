@@ -1,17 +1,14 @@
-#include <stdio.h>
-#include <unistd.h>
+#include <iostream>
+    #include <string.h>
+    int main(int argc, char **argv) {
+      if(argc < 2){
+          std::cout << "Usage:./program cmd\n";
+          return 1;
+      }
 
-int main(int argc, char **argv) {
-
-char cat[] = "cat ";
-char *command;
-size_t commandLength;
-
-commandLength = strlen(cat) + strlen(argv[1]) + 1;
-command = (char *) malloc(commandLength);
-strncpy(command, cat, commandLength);
-strncat(command, argv[1], (commandLength - strlen(cat)) );
-
-system(command);
-return (0);
-}
+      const size_t maxCommandSize = 100;
+      char command[maxCommandSize];
+      snprintf(command, maxCommandSize, "cat %s", argv[1]);
+      system(command);
+      return 0;
+    }
