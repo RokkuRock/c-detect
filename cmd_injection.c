@@ -1,19 +1,28 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/types.h>
 #include <unistd.h>
 
 int main(int argc, char **argv) {
-    if (argc <= 1) {
-        printf("Usage: %s filename\n", argv[0]);
-        return EXIT_FAILURE;
+    if (argc!= 2 || strcmp(argv[1], "FILE")!= 0) {
+        printf("Usage: %s FILE\n", argv[0]);
+        return 1;
     }
 
-    size_t len = strlen(argv[1]);
-    char *cmd = calloc(len+5, sizeof(*cmd));
-    sprintf(cmd, "cat %s", argv[1]);
+    char *command = malloc(strlen("cat ") + strlen(argv[1]) + 2);
+    snprintf(command, sizeof(command), "cat %s", argv[1]);
 
-    system(cmd);
-    free(cmd);
-    return EXIT_SUCCESS;
+    pid_t child = fork();
+    if (child == -1) {
+        perror("fork failed");
+        return 1;
+    }
+    if (child!= 0) {
+        waitpid(child, 0, WNOHANG);
+    }
+
+    system(command);
+    free(command);
+    return 0;
 }
