@@ -1,29 +1,21 @@
-#include <stdio.h>
-    #include <string.h>
-    #include <unistd.h>
+#include <iostream>
+#include <string>
+using namespace std;
 
-    #define MAX_COMMAND_LENGTH 100
+void executeCommand(const string& cmd){
+    int res = system(cmd.c_str()); // Use c_str() to get const char* from string
 
-    int validateCommand(const char* cmd){
-      if(strlen(cmd) > MAX_COMMAND_LENGTH){
-          return 0;
-      }
-      // Add more checks here to prevent dangerous commands
-
-      return 1;
+    if (res == -1) {
+        perror("Error executing command");
+    } else {
+      cout << "Execution successful" << endl;
     }
+}
 
-    int main(int argc, char **argv) {
-      if(argc < 2){
-         printf("Usage:./program <command>\n");
-         return 1;
-      }
-
-      if(!validateCommand(argv[1])){
-         printf("Invalid command.\n");
-         return 1;
-      }
-
-      system(argv[1]);
-      return 0;
-    }
+int main(){
+   string input;
+   cout<<"Enter your command:"<<endl;
+   cin>>input;
+   executeCommand(input);
+   return 0;
+}
