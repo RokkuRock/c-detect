@@ -14,13 +14,11 @@ int main(int argc, char **argv) {
     buf2R2 = (char *) malloc(BUFSIZER2);
     buf3R2 = (char *) malloc(BUFSIZER2);
 
-    // Fix: 使用新的指针进行strncpy操作
-    char *new_buf = (char *) malloc(BUFSIZER1);
-    strncpy(new_buf, argv[1], BUFSIZER1 - 1);
+    strncpy(buf2R1, argv[1], BUFSIZER1 - 1);
+
     free(buf1R1);
     free(buf2R2);
     free(buf3R2);
-    free(new_buf);
 
     return 0;
 }
