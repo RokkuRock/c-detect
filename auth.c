@@ -22,26 +22,26 @@ int flag() {
 int main(int argc, char **argv){
 
   setvbuf(stdout, NULL, _IONBF, 0);
-
+  
   // Set the gid to the effective gid
   gid_t gid = getegid();
   setresgid(gid, gid, gid);
-
-  // real pw:
+  
+  // real pw: 
   FILE *file;
   char password[64];
   char name[256];
   char password_input[64];
-
+  
   memset(password, 0, sizeof(password));
   memset(name, 0, sizeof(name));
   memset(password_input, 0, sizeof(password_input));
-
+  
   printf("What is your name?\n");
-
+  
   fgets(name, sizeof(name), stdin);
   char *end = strchr(name, '\n');
-  if (end!= NULL) {
+  if (end != NULL) {
     *end = '\x00';
   }
 
@@ -59,8 +59,8 @@ int main(int argc, char **argv){
   puts(name);
 
   fgets(password_input, sizeof(password_input), stdin);
-  password_input[sizeof(password_input)-1] = '\x00'; // 修正這行
-
+  password_input[sizeof(password_input)] = '\x00';
+  
   if (!strcmp(password_input, password)) {
     flag();
   }
