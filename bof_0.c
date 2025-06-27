@@ -15,11 +15,12 @@ void sigsegv_handler(int sig) {
 
 void vuln(char *input){
   char buf[16];
-  strcpy(buf, input);
+  strncpy(buf, input, sizeof(buf)-1);
+  buf[sizeof(buf)-1] = '\0';
 }
 
 int main(int argc, char **argv){
-  
+
   FILE *f = fopen("flag.txt","r");
   if (f == NULL) {
     printf("Flag File is Missing. Problem is Misconfigured, please contact an Admin if you are running this on the shell server.\n");
@@ -27,13 +28,13 @@ int main(int argc, char **argv){
   }
   fgets(flag,FLAGSIZE_MAX,f);
   signal(SIGSEGV, sigsegv_handler);
-  
+
   gid_t gid = getegid();
   setresgid(gid, gid, gid);
-  
+
   if (argc > 1) {
     vuln(argv[1]);
-    printf("Thanks! Received: %s", argv[1]);
+    printf("Thanks for the input, you've received: %s", argv[1]);
   }
   else
     printf("This program takes 1 argument.\n");
