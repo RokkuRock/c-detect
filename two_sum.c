@@ -2,10 +2,9 @@
 #include <stdlib.h>
 
 static int addIntOvf(int result, int a, int b) {
-    result = a + b;
-    if(a > 0 && b > 0 && result < 0)
+    if(a > 0 && b > 0 && a > INT_MAX - b)
         return -1;
-    if(a < 0 && b < 0 && result > 0)
+    if(a < 0 && b < 0 && a < INT_MIN - b)
         return -1;
     return 0;
 }
@@ -19,7 +18,7 @@ int main() {
     fflush(stdout);
     printf("What two positive numbers can make this possible: \n");
     fflush(stdout);
-    
+
     if (scanf("%d", &num1) && scanf("%d", &num2)) {
         printf("You entered %d and %d\n", num1, num2);
         fflush(stdout);
