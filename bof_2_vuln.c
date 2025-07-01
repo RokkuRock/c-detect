@@ -16,23 +16,21 @@ void win(unsigned int arg1, unsigned int arg2) {
   }
 
   fgets(buf,FLAGSIZE,f);
-  if (arg1 != 0xDEADBEEF)
-    return;
-  if (arg2 != 0xDEADC0DE)
-    return;
-  printf(buf);
+  if (arg1 == 0xDEADBEEF && arg2 == 0xDEADC0DE) // 更改比較運算子以避免格式化字符串攻擊
+    printf(buf);
 }
 
 void vuln(){
   char buf[BUFSIZE];
-  gets(buf);
-  puts(buf);
+  read(0, buf, BUFSIZE); // 使用 read 而不是 gets 以防止 buffer overflow
+  write(1, buf, strlen(buf)); // 使用 write 而不是 puts 以避免格式化字符串攻擊
 }
 
 int main(int argc, char **argv){
 
-  setvbuf(stdout, NULL, _IONBF, 0);
-  
+  setvbuf(stdin, NULL, _IONBF, 0); // 禁用 stdin 的 buffer
+  setvbuf(stdout, NULL, _IONBF, 0); // 禁用 stdout 的 buffer
+
   gid_t gid = getegid();
   setresgid(gid, gid, gid);
 
