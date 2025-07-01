@@ -16,23 +16,23 @@ void win(unsigned int arg1, unsigned int arg2) {
   }
 
   fgets(buf,FLAGSIZE,f);
-  if (arg1 != 0xDEADBEEF)
+  if (arg1!= 0xDEADBEEF)
     return;
-  if (arg2 != 0xDEADC0DE)
+  if (arg2!= 0xDEADC0DE)
     return;
   printf(buf);
 }
 
 void vuln(){
   char buf[BUFSIZE];
-  gets(buf);
+  fgets(buf, sizeof(buf), stdin); // 使用 fgets 而不是 gets
   puts(buf);
 }
 
 int main(int argc, char **argv){
 
   setvbuf(stdout, NULL, _IONBF, 0);
-  
+
   gid_t gid = getegid();
   setresgid(gid, gid, gid);
 
