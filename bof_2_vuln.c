@@ -25,7 +25,7 @@ void win(unsigned int arg1, unsigned int arg2) {
 
 void vuln(){
   char buf[BUFSIZE];
-  fgets(buf, BUFSIZE, stdin);
+  fgets(buf, sizeof(buf), stdin); // 使用 fgets 而不是 gets
   puts(buf);
 }
 
