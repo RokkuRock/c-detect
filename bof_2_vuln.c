@@ -16,19 +16,22 @@ void win(unsigned int arg1, unsigned int arg2) {
   }
 
   fgets(buf,FLAGSIZE,f);
-  if (arg1 == 0xDEADBEEF && arg2 == 0xDEADC0DE) // 檢查參數值
-    printf(buf);
+  if (arg1!= 0xDEADBEEF)
+    return;
+  if (arg2!= 0xDEADC0DE)
+    return;
+  printf(buf);
 }
 
 void vuln(){
   char buf[BUFSIZE];
-  fgets(buf, BUFSIZE, stdin); // 使用 fgets 避免 buffer overflow
+  fgets(buf, BUFSIZE, stdin);
   puts(buf);
 }
 
 int main(int argc, char **argv){
 
-  setvbuf(stdout, NULL, _IONBF, 0); // 防止 puts 被阻塞
+  setvbuf(stdout, NULL, _IONBF, 0);
 
   gid_t gid = getegid();
   setresgid(gid, gid, gid);
